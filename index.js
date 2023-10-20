@@ -31,12 +31,20 @@ async function run() {
   try {
 
     await client.connect();
-
     const phoneCollection = client.db ('productDB').collection('product');
 
 
-    app.post ('/product', async (req,res) => {
 
+    app.get ('/product', async (req,res) => {
+      const cursor = phoneCollection.find ();
+      const result = await cursor.toArray ();
+      res.send (result)
+
+    })
+
+
+
+    app.post ('/product', async (req,res) => {
         const newProDuct = req.body ;
         console.log(newProDuct);
         const result = await phoneCollection.insertOne (newProDuct);
