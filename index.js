@@ -59,6 +59,27 @@ async function run() {
 
     })
 
+    app.put('/product/:id' , async (req,res) =>{
+      const id = req.params.id;
+      const filter = {_id: new ObjectId (id)}
+      const options = { upsert: true };
+      const updatedProduct = req.body;
+      const Product = {
+        $set:{
+          name: updatedProduct.name,
+          image: updatedProduct.image,
+          brandName: updatedProduct.brandName,
+          Type: updatedProduct.Type,
+          price: updatedProduct.price,
+          description: updatedProduct.description,
+          rating: updatedProduct.rating
+
+        }
+      }
+         const result = await phoneCollection.updateOne(filter,Product,options)
+          res.send(result);
+    })
+
 
 
 
