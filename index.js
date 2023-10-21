@@ -10,10 +10,6 @@ app.use (cors ());
 app.use (express.json ());
 
 
-
-
-
-
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.rmje4mv.mongodb.net/?retryWrites=true&w=majority`;
 
 console.log(uri);
@@ -32,8 +28,7 @@ async function run() {
 
     await client.connect();
     const phoneCollection = client.db ('productDB').collection('product');
-
-
+    const addCollection = client.db ('productDB').collection('add');
 
     app.get ('/product', async (req,res) => {
       const cursor = phoneCollection.find ();
@@ -56,8 +51,7 @@ async function run() {
         const result = await phoneCollection.insertOne (newProDuct);
         res.send (result);
         
-
-    })
+    }) 
 
     app.put('/product/:id' , async (req,res) =>{
       const id = req.params.id;
@@ -81,6 +75,31 @@ async function run() {
     })
 
 
+    // add
+
+    app.post ('/addCard', async (req, res) => {
+      const newPost = req.body;
+      const result = await addCollection.insertOne(newPost);
+      res.send(result);
+  })
+
+      app.get('/addCard', async (req, res) => {
+        const cursor = addCollection.find();
+        const result = await cursor.toArray();
+        res.send(result);
+    })
+
+    
+    app.delete('/addCard/:id', async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const result = await addCollection.deleteOne(query);
+      res.send(result)
+
+  })
+
+
+
 
 
     await client.db("admin").command({ ping: 1 });
@@ -91,18 +110,6 @@ async function run() {
   }
 }
 run().catch(console.dir);
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
